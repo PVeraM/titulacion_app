@@ -15,7 +15,7 @@ class CreateEnterprisesTable extends Migration
     {
         Schema::create('enterprises', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 30);
+            $table->string('name', 50);
             $table->timestamps();
             $table->softDeletes();
         });

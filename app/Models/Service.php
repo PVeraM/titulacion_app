@@ -5,7 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class comments extends Model
+class Service extends Model
 {
     use HasFactory;
+
+    public function stores()
+    {
+        return $this->belongsToMany(Store::class, 'service_store');
+    }
 }

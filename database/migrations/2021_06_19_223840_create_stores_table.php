@@ -15,10 +15,11 @@ class CreateStoresTable extends Migration
     {
         Schema::create('stores', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name', 30);
+            $table->string('name', 50);
             $table->string('address',200)->nullable();
             $table->timestamps();
             $table->softDeletes();
+            $table->foreignId('enterprise_id')->constrained();
         });
     }
 
@@ -30,5 +31,6 @@ class CreateStoresTable extends Migration
     public function down()
     {
         Schema::dropIfExists('stores');
+
     }
 }

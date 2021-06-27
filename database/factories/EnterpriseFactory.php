@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\services;
+use App\Models\Enterprise;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ServicesFactory extends Factory
+class EnterpriseFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = services::class;
+    protected $model = Enterprise::class;
 
     /**
      * Define the model's default state.
@@ -22,7 +22,7 @@ class ServicesFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->company()
         ];
     }
 }

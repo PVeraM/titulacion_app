@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class CommentsSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,6 +13,6 @@ class CommentsSeeder extends Seeder
      */
     public function run()
     {
-        //
+        \App\Models\User::factory(1)->create();
     }
 }
