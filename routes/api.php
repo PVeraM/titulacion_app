@@ -2,6 +2,10 @@
 
 
 use App\Http\Controllers\AuthController;
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,8 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group([
-    'prefix' => 'auth'
-
+    'prefix' => 'auth',
 ], function ($router) {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
@@ -25,3 +28,26 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/me', [AuthController::class, 'me']);
 });
+
+Route::get('/email/verify/{id}/{hash}', function (Request $request) {
+    $user = User::find($request->route('id'));
+
+    if ($user->hasVerifiedEmail()) {
+//        return redirect(env('FRONT_URL') . '/email/verify/already-success');
+        return redirect(env('FRONT_URL') );
+    }
+
+    if ($user->markEmailAsVerified()) {
+        event(new Verified($user));
+    }
+
+//    return redirect(env('FRONT_URL') . '/email/verify/success');
+    return redirect(env('FRONT_URL') );
+})->middleware(['signed'])->name('verification.verify');
+
+Route::get('/verify-email', function (){
+    return response()->json([
+        'message' => 'Por favor, primero debe revisar su correo electrónico y activar su cuenta mediante el enlace enviado.'
+    ], 400);
+})
+->name('verification.notice');

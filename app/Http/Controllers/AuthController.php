@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -36,6 +37,12 @@ class AuthController extends Controller
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
+        if (! auth()->user()->email_verified_at ){
+            return response()->json([
+                'message' => 'Por favor, primero debe revisar su correo electrónico y activar su cuenta mediante el enlace enviado.'
+            ], 403);
+        }
+
         return $this->createNewToken($token);
     }
 
@@ -59,6 +66,8 @@ class AuthController extends Controller
             $validator->validated(),
             ['password' => bcrypt($request->password)]
         ));
+
+        event(new Registered($user));
 
         return response()->json([
             'message' => 'Usuario registrado exitosamente.',
