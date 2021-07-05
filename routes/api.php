@@ -33,16 +33,14 @@ Route::get('/email/verify/{id}/{hash}', function (Request $request) {
     $user = User::find($request->route('id'));
 
     if ($user->hasVerifiedEmail()) {
-//        return redirect(env('FRONT_URL') . '/email/verify/already-success');
-        return redirect(env('FRONT_URL') );
+        return redirect(env('FRONT_URL') . '/email/failed');
     }
 
     if ($user->markEmailAsVerified()) {
         event(new Verified($user));
     }
 
-//    return redirect(env('FRONT_URL') . '/email/verify/success');
-    return redirect(env('FRONT_URL') );
+    return redirect(env('FRONT_URL') . '/email/success');
 })->middleware(['signed'])->name('verification.verify');
 
 Route::get('/verify-email', function (){
