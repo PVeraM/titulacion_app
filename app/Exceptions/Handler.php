@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -34,8 +36,18 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+//        $this->reportable(function (Throwable $e) {
+//            //
+//        });
+        $this->renderable(function(Exception $e, $request) {
+            return $this->handleException($request, $e);
         });
+    }
+
+    public function handleException($request, Exception $exception)
+    {
+        if($exception instanceof RouteNotFoundException) {
+            return response('The specified URL cannot be  found.', 404);
+        }
     }
 }

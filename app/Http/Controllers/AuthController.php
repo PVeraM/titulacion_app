@@ -34,7 +34,7 @@ class AuthController extends Controller
         }
 
         if (! $token = auth()->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Credenciales incorrectas'], 401);
         }
 
         if (! auth()->user()->email_verified_at ){
@@ -53,7 +53,8 @@ class AuthController extends Controller
      */
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|between:2,50',
+            'first_name' => 'required|string|between:2,50',
+            'last_name' => 'required|string|between:2,50',
             'email' => 'required|string|email|max:50|unique:users',
             'password' => 'required|string|min:8',
         ]);
@@ -62,16 +63,20 @@ class AuthController extends Controller
             return response()->json($validator->errors()->toJson(), 400);
         }
 
+        $user_name = substr(strtoupper($request->first_name),0,1) . strtoupper($request->last_name);
+
         $user = User::create(array_merge(
             $validator->validated(),
-            ['password' => bcrypt($request->password)]
+            [
+                'password' => bcrypt($request->password),
+                'user_name' => $user_name
+            ]
         ));
 
         event(new Registered($user));
 
         return response()->json([
-            'message' => 'Usuario registrado exitosamente.',
-            'user' => $user
+            'message' => 'Usuario registrado exitosamente.'
         ], 201);
     }
 
