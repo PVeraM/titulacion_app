@@ -2,6 +2,8 @@
 
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ForgetPasswordController;
+use App\Http\Controllers\ResetPasswordController;
 use App\Models\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -28,6 +30,9 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/me', [AuthController::class, 'me']);
 });
+
+Route::post('/forgot-password', [ForgetPasswordController::class, 'reqForgotPassword']);
+Route::post('/reset-password', [ResetPasswordController::class, 'updatePassword']);
 
 Route::get('/email/verify/{id}/{hash}', function (Request $request) {
     $user = User::find($request->route('id'));
