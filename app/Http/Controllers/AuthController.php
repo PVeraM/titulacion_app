@@ -43,6 +43,8 @@ class AuthController extends Controller
             ], 403);
         }
 
+        $token = auth()->claims(['is_admin' => auth()->user()->is_admin])->attempt($validator->validated());
+
         return $this->createNewToken($token);
     }
 
