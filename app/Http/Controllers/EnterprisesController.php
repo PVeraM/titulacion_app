@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\enterprises;
+use App\Http\Requests\EnterprisePostRequest;
+use App\Models\Enterprise;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 class EnterprisesController extends Controller
 {
@@ -14,72 +17,42 @@ class EnterprisesController extends Controller
      */
     public function index()
     {
-        //
+        return Enterprise::paginate(10);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(EnterprisePostRequest $request)
     {
-        //
+        $enterprise = Enterprise::create($request->all());
+        return response()->json([
+            'message' => 'La empresa ha sido creada con éxito.',
+            'enterprise' => $enterprise
+        ], Response::HTTP_CREATED);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function show(Enterprise $enterprise)
     {
-        //
+        return $enterprise;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\enterprises  $enterprises
-     * @return \Illuminate\Http\Response
-     */
-    public function show(enterprises $enterprises)
+    public function update(EnterprisePostRequest $request, Enterprise $enterprise)
     {
-        //
+        $enterprise = $enterprise->fill($request->all())->save();
+        return response()->json([
+            'message' => 'La empresa ha sido actualizada con éxito.'
+        ], Response::HTTP_OK);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\enterprises  $enterprises
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(enterprises $enterprises)
+    public function destroy(Enterprise $enterprise)
     {
-        //
-    }
+        if( $enterprise->stores()->count() !== 0 ){
+            return response()->json([
+                'message' => 'La empresa no puede ser eliminada porque está en uso.'
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\enterprises  $enterprises
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, enterprises $enterprises)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\enterprises  $enterprises
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(enterprises $enterprises)
-    {
-        //
+        $enterprise->delete();
+        return response()->json([
+            'message' => 'La empresa ha sido eliminada con éxito.'
+        ], Response::HTTP_OK);
     }
 }

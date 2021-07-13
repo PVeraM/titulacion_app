@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Verified;
 
 class AuthController extends Controller
 {
@@ -15,7 +16,7 @@ class AuthController extends Controller
      * @return void
      */
     public function __construct() {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register','verifyEmail']]);
     }
 
     /**
@@ -78,7 +79,7 @@ class AuthController extends Controller
         event(new Registered($user));
 
         return response()->json([
-            'message' => 'Usuario registrado exitosamente.'
+            'message' => 'Usuario registrado exitosamente. Revise su dirección de correo electrónico para activar la cuenta.'
         ], 201);
     }
 
@@ -126,6 +127,20 @@ class AuthController extends Controller
             'expires_in' => auth()->factory()->getTTL() * 60,
 //            'user' => auth()->user()
         ]);
+    }
+
+    public function verifyEmail(Request $request){
+        $user = User::find($request->route('id'));
+
+        if ($user->hasVerifiedEmail()) {
+            return redirect(env('FRONT_URL') . '/email/failed');
+        }
+
+        if ($user->markEmailAsVerified()) {
+            event(new Verified($user));
+        }
+
+        return redirect(env('FRONT_URL') . '/email/success');
     }
 
 }

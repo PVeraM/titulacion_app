@@ -2,11 +2,9 @@
 
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EnterprisesController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\ResetPasswordController;
-use App\Models\User;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,23 +32,7 @@ Route::group([
 Route::post('/forgot-password', [ForgetPasswordController::class, 'reqForgotPassword']);
 Route::post('/reset-password', [ResetPasswordController::class, 'updatePassword']);
 
-Route::get('/email/verify/{id}/{hash}', function (Request $request) {
-    $user = User::find($request->route('id'));
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->middleware(['signed'])->name('verification.verify');
 
-    if ($user->hasVerifiedEmail()) {
-        return redirect(env('FRONT_URL') . '/email/failed');
-    }
-
-    if ($user->markEmailAsVerified()) {
-        event(new Verified($user));
-    }
-
-    return redirect(env('FRONT_URL') . '/email/success');
-})->middleware(['signed'])->name('verification.verify');
-
-Route::get('/verify-email', function (){
-    return response()->json([
-        'message' => 'Por favor, primero debe revisar su correo electrónico y activar su cuenta mediante el enlace enviado.'
-    ], 400);
-})
-->name('verification.notice');
+Route::apiResource('enterprises', EnterprisesController::class)
+->middleware("auth:api");
