@@ -36,7 +36,7 @@ class EnterprisesController extends Controller
 
     public function update(EnterprisePostRequest $request, Enterprise $enterprise)
     {
-        $enterprise = $enterprise->fill($request->all())->save();
+         $enterprise->fill($request->all())->save();
         return response()->json([
             'message' => 'La empresa ha sido actualizada con éxito.'
         ], Response::HTTP_OK);

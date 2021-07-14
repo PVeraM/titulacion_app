@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\services;
+use App\Http\Requests\ServicePostRequest;
+use App\Models\Comment;
+use App\Models\Service;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ServicesController extends Controller
 {
@@ -14,72 +17,44 @@ class ServicesController extends Controller
      */
     public function index()
     {
-        //
+        return Service::paginate(10);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(ServicePostRequest $request)
     {
-        //
+        $service = Service::create($request->all());
+        return response()->json([
+            'message' => 'El servicio ha sido creado con éxito.',
+            'enterprise' => $service
+        ], Response::HTTP_CREATED);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function show(Service $service)
     {
-        //
+        return $service;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\services  $services
-     * @return \Illuminate\Http\Response
-     */
-    public function show(services $services)
+    public function update(ServicePostRequest $request, Service $service)
     {
-        //
+        $service->fill($request->all())->save();
+        return response()->json([
+            'message' => 'El servicio ha sido actualizado con éxito.'
+        ], Response::HTTP_OK);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\services  $services
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(services $services)
+    public function destroy(Service $service)
     {
-        //
-    }
+        if(
+            $service->stores()->count() !== 0
+        ){
+            return response()->json([
+                'message' => 'El servicio no puede ser eliminado porque está en uso.'
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\services  $services
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, services $services)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\services  $services
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(services $services)
-    {
-        //
+        $service->delete();
+        return response()->json([
+            'message' => 'El servicio ha sido eliminado con éxito.'
+        ], Response::HTTP_OK);
     }
 }
