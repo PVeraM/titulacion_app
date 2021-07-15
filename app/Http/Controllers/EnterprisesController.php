@@ -10,6 +10,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnterprisesController extends Controller
 {
+    public function __construct() {
+        $this->middleware('checkAdmin', ['except' => ['index', 'show']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
