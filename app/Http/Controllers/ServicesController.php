@@ -22,7 +22,8 @@ class ServicesController extends Controller
      */
     public function index()
     {
-        return Service::paginate(10);
+        return Service::orderBy('created_at', 'desc')
+            ->paginate(10);
     }
 
     public function store(ServicePostRequest $request)

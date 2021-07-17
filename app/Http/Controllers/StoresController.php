@@ -9,14 +9,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class StoresController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        return Store::paginate(10);
+        return Store::with('enterprise')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
     }
 
     public function store(StorePostRequest $request)

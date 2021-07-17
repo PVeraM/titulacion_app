@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EnterprisesController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\StoresController;
 use Illuminate\Http\Request;
@@ -43,4 +44,7 @@ Route::apiResource('stores', StoresController::class)
 ->middleware("auth:api");
 
 Route::apiResource('services', ServicesController::class)
+->middleware("auth:api");
+
+Route::post('/search/{entity}', [SearchController::class, 'search'])
 ->middleware("auth:api");

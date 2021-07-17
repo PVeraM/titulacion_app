@@ -20,7 +20,8 @@ class EnterprisesController extends Controller
      */
     public function index()
     {
-        return Enterprise::paginate(10);
+        return Enterprise::orderBy('created_at', 'desc')
+            ->paginate(10);
     }
 
     public function store(EnterprisePostRequest $request)

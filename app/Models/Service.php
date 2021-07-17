@@ -20,4 +20,9 @@ class Service extends Model
     {
         return $this->belongsToMany(Store::class, 'service_store');
     }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

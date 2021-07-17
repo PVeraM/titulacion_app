@@ -33,7 +33,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     protected $hidden = [
         'password',
         'remember_token',
-        'isAdmin',
+        'is_admin',
         'created_at',
         'updated_at',
         'deleted_at',
@@ -67,5 +67,10 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
     }
 }
