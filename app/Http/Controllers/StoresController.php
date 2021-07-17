@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\stores;
-use Illuminate\Http\Request;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\StorePutRequest;
+use App\Models\Store;
+use Symfony\Component\HttpFoundation\Response;
 
 class StoresController extends Controller
 {
@@ -14,72 +16,43 @@ class StoresController extends Controller
      */
     public function index()
     {
-        //
+        return Store::paginate(10);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(StorePostRequest $request)
     {
-        //
+        $store = Store::create($request->all());
+        return response()->json([
+            'message' => 'La tienda ha sido creada con éxito.',
+            'store' => $store
+        ], Response::HTTP_CREATED);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+
+    public function show(Store $store)
     {
-        //
+        return $store;
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\stores  $stores
-     * @return \Illuminate\Http\Response
-     */
-    public function show(stores $stores)
+    public function update(StorePutRequest $request, Store $store)
     {
-        //
+        $store->fill($request->all())->save();
+        return response()->json([
+            'message' => 'La tienda ha sido actualizada con éxito.'
+        ], Response::HTTP_OK);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\stores  $stores
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(stores $stores)
+    public function destroy(Store $store)
     {
-        //
-    }
+        if( $store->services()->count() !== 0 ){
+            return response()->json([
+                'message' => 'La tienda no puede ser eliminada porque está en uso.'
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\stores  $stores
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, stores $stores)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\stores  $stores
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(stores $stores)
-    {
-        //
+        $store->delete();
+        return response()->json([
+            'message' => 'La tienda ha sido eliminada con éxito.'
+        ], Response::HTTP_OK);
     }
 }

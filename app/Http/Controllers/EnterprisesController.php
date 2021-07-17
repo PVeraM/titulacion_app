@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\EnterprisePostRequest;
+use App\Http\Requests\EnterprisePutRequest;
 use App\Models\Enterprise;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnterprisesController extends Controller
@@ -38,7 +37,7 @@ class EnterprisesController extends Controller
         return $enterprise;
     }
 
-    public function update(EnterprisePostRequest $request, Enterprise $enterprise)
+    public function update(EnterprisePutRequest $request, Enterprise $enterprise)
     {
          $enterprise->fill($request->all())->save();
         return response()->json([

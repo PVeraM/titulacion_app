@@ -6,6 +6,7 @@ use App\Http\Controllers\EnterprisesController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\StoresController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,9 @@ Route::post('/reset-password', [ResetPasswordController::class, 'updatePassword'
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])->middleware(['signed'])->name('verification.verify');
 
 Route::apiResource('enterprises', EnterprisesController::class)
+->middleware("auth:api");
+
+Route::apiResource('stores', StoresController::class)
 ->middleware("auth:api");
 
 Route::apiResource('services', ServicesController::class)

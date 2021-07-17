@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ServicePostRequest;
+use App\Http\Requests\ServicePutRequest;
 use App\Models\Comment;
 use App\Models\Service;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class ServicesController extends Controller
         $service = Service::create($request->all());
         return response()->json([
             'message' => 'El servicio ha sido creado con éxito.',
-            'enterprise' => $service
+            'service' => $service
         ], Response::HTTP_CREATED);
     }
 
@@ -38,7 +39,7 @@ class ServicesController extends Controller
         return $service;
     }
 
-    public function update(ServicePostRequest $request, Service $service)
+    public function update(ServicePutRequest $request, Service $service)
     {
         $service->fill($request->all())->save();
         return response()->json([
