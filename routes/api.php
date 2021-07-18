@@ -42,6 +42,8 @@ Route::apiResource('enterprises', EnterprisesController::class)
 
 Route::apiResource('stores', StoresController::class)
 ->middleware("auth:api");
+Route::post('/stores-services/{store_id}', [StoresController::class, 'updateStores'])
+->middleware("auth:api");
 
 Route::apiResource('services', ServicesController::class)
 ->middleware("auth:api");
