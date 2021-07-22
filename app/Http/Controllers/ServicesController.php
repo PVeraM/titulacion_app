@@ -43,8 +43,10 @@ class ServicesController extends Controller
     public function update(ServicePutRequest $request, Service $service)
     {
         $service->fill($request->all())->save();
+        $serviceUpdate = Service::find($service->id);
         return response()->json([
-            'message' => 'El servicio ha sido actualizado con éxito.'
+            'message' => 'El servicio ha sido actualizado con éxito.',
+            'service' => $serviceUpdate
         ], Response::HTTP_OK);
     }
 

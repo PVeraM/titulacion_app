@@ -41,8 +41,10 @@ class EnterprisesController extends Controller
     public function update(EnterprisePutRequest $request, Enterprise $enterprise)
     {
          $enterprise->fill($request->all())->save();
+         $enterpriseUpdate = Enterprise::find($enterprise->id);
         return response()->json([
-            'message' => 'La empresa ha sido actualizada con éxito.'
+            'message' => 'La empresa ha sido actualizada con éxito.',
+            'enterprise' => $enterpriseUpdate
         ], Response::HTTP_OK);
     }
 

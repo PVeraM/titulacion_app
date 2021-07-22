@@ -19,6 +19,7 @@ class StoresController extends Controller
     public function index()
     {
         return Store::with('enterprise')
+            ->with('services')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
     }
@@ -35,14 +36,21 @@ class StoresController extends Controller
 
     public function show(Store $store)
     {
-        return $store;
+        $data = $store;
+        $data["services"] =  $store->services;
+        $data["enterprise"] =  $store->enterprise;
+        return response()->json(
+            $data
+        , Response::HTTP_OK);
     }
 
     public function update(StorePutRequest $request, Store $store)
     {
         $store->fill($request->all())->save();
+        $storeUpdate = Store::find($store->id);
         return response()->json([
-            'message' => 'La tienda ha sido actualizada con éxito.'
+            'message' => 'La tienda ha sido actualizada con éxito.',
+            'store' => $storeUpdate
         ], Response::HTTP_OK);
     }
 
