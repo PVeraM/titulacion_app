@@ -50,19 +50,14 @@ class ServicesController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function destroy(Service $service)
+    public function destroy(Request $request, Service $service)
     {
-        if(
-            $service->stores()->count() !== 0
-        ){
-            return response()->json([
-                'message' => 'El servicio no puede ser eliminado porque está en uso.'
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $service->delete();
+        $service->is_active = $request->is_active;
+        $service->save();
+        $serviceUpdate = Service::find($service->id);
         return response()->json([
-            'message' => 'El servicio ha sido eliminado con éxito.'
+            'message' => 'El estado del servicio ha sido actualizado.',
+            'service' => $serviceUpdate
         ], Response::HTTP_OK);
     }
 }

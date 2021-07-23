@@ -16,6 +16,10 @@ class Store extends Model
         'enterprise_id'
     ];
 
+    protected $hidden = [
+        'deleted_at',
+    ];
+
     public function enterprise()
     {
         return $this->belongsTo(Enterprise::class);

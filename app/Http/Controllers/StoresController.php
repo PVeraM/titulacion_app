@@ -54,17 +54,14 @@ class StoresController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function destroy(Store $store)
+    public function destroy( Request $request, Store $store)
     {
-        if( $store->services()->count() !== 0 ){
-            return response()->json([
-                'message' => 'La tienda no puede ser eliminada porque está en uso.'
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $store->delete();
+        $store->is_active = $request->is_active;
+        $store->save();
+        $storeUpdate = Store::find($store->id);
         return response()->json([
-            'message' => 'La tienda ha sido eliminada con éxito.'
+            'message' => 'El estado de la tienda ha sido actualizado.',
+            'store' => $storeUpdate
         ], Response::HTTP_OK);
     }
 

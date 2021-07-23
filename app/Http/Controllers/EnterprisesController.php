@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\EnterprisePostRequest;
 use App\Http\Requests\EnterprisePutRequest;
 use App\Models\Enterprise;
+
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnterprisesController extends Controller
@@ -48,17 +50,14 @@ class EnterprisesController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function destroy(Enterprise $enterprise)
+    public function destroy(Request $request, Enterprise $enterprise)
     {
-        if( $enterprise->stores()->count() !== 0 ){
-            return response()->json([
-                'message' => 'La empresa no puede ser eliminada porque está en uso.'
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $enterprise->delete();
+        $enterprise->is_active = $request->is_active;
+        $enterprise->save();
+        $enterpriseUpdate = Enterprise::find($enterprise->id);
         return response()->json([
-            'message' => 'La empresa ha sido eliminada con éxito.'
+            'message' => 'El estado de la empresa ha sido actualizado.',
+            'enterprise' => $enterpriseUpdate
         ], Response::HTTP_OK);
     }
 }

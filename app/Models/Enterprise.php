@@ -15,6 +15,10 @@ class Enterprise extends Model
         'name'
     ];
 
+    protected $hidden = [
+        'deleted_at',
+    ];
+
     public function comments()
     {
         return $this->hasMany(Comment::class);

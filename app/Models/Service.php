@@ -15,6 +15,9 @@ class Service extends Model
         'description'
     ];
 
+    protected $hidden = [
+        'deleted_at',
+    ];
 
     public function stores()
     {
