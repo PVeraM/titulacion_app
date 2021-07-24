@@ -18,7 +18,14 @@ class StoresController extends Controller
 
     public function index()
     {
-        return Store::with('enterprise')
+        if( auth()->user()->is_admin ) {
+            return Store::with('enterprise')
+                ->with('services')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+        }
+        return Store::where('is_active', 1)
+            ->with('enterprise')
             ->with('services')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -36,6 +43,12 @@ class StoresController extends Controller
 
     public function show(Store $store)
     {
+        if( !auth()->user()->is_admin && !$store->is_active ) {
+            return response()->json([
+                'message' => 'Tienda no encontrada.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
         $data = $store;
         $data["services"] =  $store->services;
         $data["enterprise"] =  $store->enterprise;

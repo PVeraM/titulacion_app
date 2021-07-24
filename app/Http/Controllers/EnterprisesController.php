@@ -22,8 +22,17 @@ class EnterprisesController extends Controller
      */
     public function index()
     {
-        return Enterprise::orderBy('created_at', 'desc')
-            ->paginate(10);
+        if( auth()->user()->is_admin ){
+            return Enterprise::orderBy('created_at', 'desc')
+                ->paginate(10);
+        }
+
+        return Enterprise::where('is_active', 1)
+            ->with(['stores' => function ($query) {
+                $query->where('is_active', 1);
+            }])
+            ->orderBy('name', 'asc')
+            ->get();
     }
 
     public function store(EnterprisePostRequest $request)
@@ -37,6 +46,11 @@ class EnterprisesController extends Controller
 
     public function show(Enterprise $enterprise)
     {
+        if( !auth()->user()->is_admin && !$enterprise->is_active ) {
+            return response()->json([
+                'message' => 'Empresa no encontrada.'
+            ], Response::HTTP_NOT_FOUND);
+        }
         return $enterprise;
     }
 

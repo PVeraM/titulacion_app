@@ -22,7 +22,12 @@ class ServicesController extends Controller
      */
     public function index()
     {
-        return Service::orderBy('created_at', 'desc')
+        if( auth()->user()->is_admin ) {
+            return Service::orderBy('created_at', 'desc')
+                ->paginate(10);
+        }
+        return Service::where('is_active', 1)
+            ->orderBy('created_at', 'desc')
             ->paginate(10);
     }
 
@@ -37,6 +42,12 @@ class ServicesController extends Controller
 
     public function show(Service $service)
     {
+        if( !auth()->user()->is_admin && !$service->is_active ) {
+            return response()->json([
+                'message' => 'Servicio no encontrado.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
         return $service;
     }
 
