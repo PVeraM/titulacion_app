@@ -16,9 +16,8 @@ class CreateCommentsTable extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('description', 200);
+            $table->boolean('description_enable')->default(true);
             $table->enum('ranking', [1,2,3,4,5]);
-            $table->integer('like')->default(0);
-            $table->integer('dislike')->default(0);
             $table->timestamps();
             $table->softDeletes();
             $table->foreignId('user_id')->constrained();
