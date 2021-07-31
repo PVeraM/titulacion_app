@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentPostRequest;
+use App\Models\Comment;
 use App\Models\comments;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class CommentsController extends Controller
 {
+    public function __construct() {
+        $this->middleware('checkClient', ['except' => ['index', 'show']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,25 +24,16 @@ class CommentsController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(CommentPostRequest $request)
     {
-        //
-    }
+        $data = $request->all();
+        $data['user_id'] = strval(auth()->user()->id);
+        $comment = Comment::create($data);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return response()->json([
+            'message' => 'Comentario creado con éxito.',
+            'comment' => $comment
+        ], Response::HTTP_CREATED);
     }
 
     /**
@@ -45,17 +43,6 @@ class CommentsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(comments $comments)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\comments  $comments
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(comments $comments)
     {
         //
     }

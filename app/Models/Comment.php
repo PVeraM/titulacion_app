@@ -10,6 +10,20 @@ class Comment extends Model
 {
     use HasFactory,SoftDeletes;
 
+    protected $fillable = [
+        'description',
+        'ranking',
+        'description_enable',
+        'service_id',
+        'enterprise_id',
+        'store_id',
+        'user_id',
+    ];
+
+    protected $hidden = [
+        'deleted_at',
+    ];
+
     public function enterprise()
     {
         return $this->belongsTo(Enterprise::class);
