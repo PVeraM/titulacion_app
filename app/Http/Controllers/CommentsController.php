@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentPostRequest;
 use App\Models\Comment;
-use App\Models\comments;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -21,7 +20,21 @@ class CommentsController extends Controller
      */
     public function index()
     {
-        //
+        if ( auth()->user()->is_admin ){
+            return Comment::with('enterprise')
+                ->with('store')
+                ->with('service')
+                ->with('user')
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+        }
+
+        return Comment::with('enterprise')
+            ->with('store')
+            ->with('service')
+            ->with('user')
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     public function store(CommentPostRequest $request)
@@ -36,36 +49,23 @@ class CommentsController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\comments  $comments
-     * @return \Illuminate\Http\Response
-     */
-    public function show(comments $comments)
+    public function show(Comment $comment)
+    {
+        $data               = $comment;
+        $data["user"]       = $comment->user;
+        $data["enterprise"] = $comment->enterprise;
+        $data["store"]      = $comment->store;
+        $data["service"]    = $comment->service;
+
+        return $data;
+    }
+
+    public function update(Request $request, Comment $comment)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\comments  $comments
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, comments $comments)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\comments  $comments
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(comments $comments)
+    public function destroy(Comment $comment)
     {
         //
     }
