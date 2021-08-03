@@ -1,5 +1,5 @@
 <template>
-    <h1>Hola Pato .l.</h1>
+    <h1>Esta es la API de la APP</h1>
 </template>
 
 <script>
