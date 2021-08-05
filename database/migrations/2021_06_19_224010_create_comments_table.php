@@ -17,6 +17,7 @@ class CreateCommentsTable extends Migration
             $table->bigIncrements('id');
             $table->string('description', 200);
             $table->boolean('description_enable')->default(true);
+            $table->boolean('description_locked')->default(false);
             $table->enum('ranking', [1,2,3,4,5]);
             $table->timestamps();
             $table->softDeletes();

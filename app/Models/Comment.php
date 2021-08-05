@@ -21,7 +21,7 @@ class Comment extends Model
 
     protected $hidden = [
         'deleted_at',
-        'description_enable'
+//        'description_enable',
     ];
 
     public function enterprise()
