@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\CommentUserController;
 use App\Http\Controllers\EnterprisesController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\ResetPasswordController;
@@ -50,6 +51,9 @@ Route::apiResource('services', ServicesController::class)
 ->middleware("auth:api");
 
 Route::apiResource('comments', CommentsController::class)
+->middleware("auth:api");
+
+Route::apiResource('likes', CommentUserController::class)
 ->middleware("auth:api");
 
 Route::post('/search/{entity}', [SearchController::class, 'search'])

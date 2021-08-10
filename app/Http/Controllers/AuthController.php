@@ -116,6 +116,7 @@ class AuthController extends Controller
                             ->with('service')
                             ->with('enterprise')
                             ->with('store')
+                            ->with('comment_users')
                             ->get();
 
         return response()->json($user);

@@ -25,6 +25,7 @@ class CommentsController extends Controller
         $comments = Comment::with('enterprise')
             ->with('store')
             ->with('service')
+            ->with('comment_users')
             ->with('user')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -58,6 +59,7 @@ class CommentsController extends Controller
         $data["enterprise"] = $comment->enterprise;
         $data["store"] = $comment->store;
         $data["service"] = $comment->service;
+        $data["comment_users"] = $comment->comment_users;
 
         return $data;
     }

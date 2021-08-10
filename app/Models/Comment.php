@@ -43,4 +43,10 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function comment_users()
+    {
+        return $this->hasMany(CommentUser::class);
+    }
+
 }

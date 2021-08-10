@@ -13,11 +13,11 @@ class CreateCommentUserTable extends Migration
      */
     public function up()
     {
-        Schema::create('comment_user', function (Blueprint $table) {
+        Schema::create('comment_users', function (Blueprint $table) {
             $table->bigIncrements('id');
 
             $table->boolean('like')->default(false);
-            $table->boolean('dislike')->default(false);
+//            $table->boolean('dislike')->default(false);
 
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('comment_id');
